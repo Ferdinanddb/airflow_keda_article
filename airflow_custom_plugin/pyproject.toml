@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "airflow-custom-plugin"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+azure-identity = "1.15.0"
+flask-caching = "2.0.2"
+apache-airflow = {version = "2.9.3", extras = ["celery", "cncf-kubernetes"]}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.plugins."airflow.plugins"]
+custom_database_plugin = "airflow_custom_plugin.pg_override_plugin:CustomDatabasePlugin"

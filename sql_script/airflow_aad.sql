@@ -1,0 +1,2 @@
+SELECT * FROM pg_catalog.pgaadauth_create_principal_with_oid('test_keda_airflow_uami_airflow_keda', '<OBJECT_ID FROM TERRAFORM OUTPUT>', 'service', false, false);
+GRANT ALL ON DATABASE airflow_db TO test_keda_airflow_uami_airflow_keda;
