@@ -1,0 +1,147 @@
+defaultAirflowTag: "2.9.3"
+airflowVersion: "2.9.3"
+
+securityContexts:
+  runAsNonRoot: true
+  runAsUser: 50000
+
+images:
+  airflow:
+    repository: ferdi7/airflow_custom_database
+    tag: "latest_amd"
+    pullPolicy: IfNotPresent
+  pod_template:
+    repository: ferdi7/airflow_custom_database
+    tag: "latest_amd"
+    pullPolicy: IfNotPresent
+  flower:
+    repository: ferdi7/airflow_custom_database
+    tag: "latest_amd"
+    pullPolicy: IfNotPresent
+
+labels:
+  azure.workload.identity/use: "true"
+
+config:
+  core:
+    lazy_load_plugins: 'False'
+    load_examples: 'False'
+  logging:
+    logging_level: 'DEBUG'
+
+executor: "CeleryKubernetesExecutor"
+
+data:
+  metadataConnection:
+    user: test_keda_airflow_uami_airflow_keda
+    pass: dummy
+    protocol: postgresql
+    host: test-keda-airflow-pg5.postgres.database.azure.com
+    port: 5432
+    db: airflow_db
+    sslmode: require
+
+scheduler:
+  serviceAccount:
+    create: true
+    
+    annotations:
+      azure.workload.identity/client-id: <UAMI_CLIENT_ID>
+      azure.workload.identity/tenant-id: <AZURE_TENANT_ID>
+
+migrateDatabaseJob:
+  useHelmHooks: false
+  applyCustomEnv: false
+  enabled: true
+  serviceAccount:
+    create: true
+    
+    annotations:
+      azure.workload.identity/client-id: <UAMI_CLIENT_ID>
+      azure.workload.identity/tenant-id: <AZURE_TENANT_ID>
+
+createUserJob:
+  useHelmHooks: false
+  applyCustomEnv: false
+  serviceAccount:
+    create: true
+    
+    annotations:
+      azure.workload.identity/client-id: <UAMI_CLIENT_ID>
+      azure.workload.identity/tenant-id: <AZURE_TENANT_ID>
+
+webserver:
+  serviceAccount:
+    create: true
+    
+    annotations:
+      azure.workload.identity/client-id: <UAMI_CLIENT_ID>
+      azure.workload.identity/tenant-id: <AZURE_TENANT_ID>
+
+triggerer:
+  enabled: true
+  serviceAccount:
+    create: true
+    
+    annotations:
+      azure.workload.identity/client-id: <UAMI_CLIENT_ID>
+      azure.workload.identity/tenant-id: <AZURE_TENANT_ID>
+  keda:
+    enabled: true
+    minReplicaCount: 1
+    maxReplicaCount: 2
+    usePgbouncer: false
+
+dagProcessor:
+  enabled: false
+
+statsd:
+  enabled: false
+
+redis:
+  enabled: true
+  serviceAccount:
+    create: true
+    
+    annotations:
+      azure.workload.identity/client-id: <UAMI_CLIENT_ID>
+      azure.workload.identity/tenant-id: <AZURE_TENANT_ID>
+
+flower:
+  enabled: true
+  serviceAccount:
+    create: true
+    
+    annotations:
+      azure.workload.identity/client-id: <UAMI_CLIENT_ID>
+      azure.workload.identity/tenant-id: <AZURE_TENANT_ID>
+
+postgresql:
+  enabled: false
+
+pgbouncer:
+  enabled: false
+
+workers:
+  keda:
+    enabled: true
+    minReplicaCount: 0
+    maxReplicaCount: 2
+    usePgbouncer: false
+  
+  persistence:
+    enabled: false
+
+  serviceAccount:
+    create: true
+    
+    annotations:
+      azure.workload.identity/client-id: <UAMI_CLIENT_ID>
+      azure.workload.identity/tenant-id: <AZURE_TENANT_ID>
+
+logs:
+  persistence:
+    enabled: true
+    size: 10Gi
+    annotations: {}
+    storageClassName: private-azurefile-csi-logs
