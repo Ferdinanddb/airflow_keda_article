@@ -1,0 +1,36 @@
+podLabels:
+  keda:
+    azure.workload.identity/use: "true"
+  metricsAdapter:
+    azure.workload.identity/use: "true"
+  webhooks:
+    azure.workload.identity/use: "true"
+
+serviceAccount:
+  operator:
+    create: true
+    name: keda-operator
+    automountServiceAccountToken: true
+    annotations:
+      azure.workload.identity/client-id: <UAMI_CLIENT_ID>
+      azure.workload.identity/tenant-id: <AZURE_TENANT_ID>
+  metricServer:
+    create: true
+    name: keda-metrics-server
+    automountServiceAccountToken: true
+    annotations:
+      azure.workload.identity/client-id: <UAMI_CLIENT_ID>
+      azure.workload.identity/tenant-id: <AZURE_TENANT_ID>
+  webhooks:
+    create: true
+    name: keda-webhook
+    automountServiceAccountToken: true
+    annotations:
+      azure.workload.identity/client-id: <UAMI_CLIENT_ID>
+      azure.workload.identity/tenant-id: <AZURE_TENANT_ID>
+
+podIdentity:
+  azureWorkload:
+    enabled: true
+    client_id: <UAMI_CLIENT_ID>
+    tenant_id: <AZURE_TENANT_ID>
