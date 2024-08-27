@@ -1,0 +1,9 @@
+apiVersion: keda.sh/v1alpha1
+kind: ClusterTriggerAuthentication
+metadata:
+  name: azure-pg-flex-auth
+spec:
+  podIdentity:
+    provider: azure-workload
+    identityId: <UAMI_CLIENT_ID>
+    identityTenantId: <AZURE_TENANT_ID>
